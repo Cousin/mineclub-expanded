@@ -4,8 +4,11 @@ import io.github.blobanium.mineclubexpanded.util.config.ConfigReader;
 import io.github.blobanium.mineclubexpanded.util.discord.DiscordRP;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ServerInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.regex.Pattern;
 
 public class MineclubExpanded implements ModInitializer {
 	// This logger is used to write text to the console and the log file.
@@ -13,6 +16,8 @@ public class MineclubExpanded implements ModInitializer {
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LogManager.getLogger("Mineclub Expanded");
 	public static boolean isChatOpen = false;
+
+	private static final Pattern MINECLUB_SERVER_ADDR_PATTERN = Pattern.compile("(.+\\.)?mineclub\\.(com|net|org|house)", Pattern.CASE_INSENSITIVE);
 
 	@Override
 	public void onInitialize() {
@@ -31,11 +36,11 @@ public class MineclubExpanded implements ModInitializer {
 	}
 
 	public static boolean isOnMineclub() {
-		try {
-			return MinecraftClient.getInstance().getCurrentServerEntry().address.equals("mineclub.com") || MinecraftClient.getInstance().getCurrentServerEntry().address.equals("play.mineclub.com");
-		} catch (NullPointerException e) {
-			LOGGER.debug("Suppressing Null warning");
+		final ServerInfo serverInfo = MinecraftClient.getInstance().getCurrentServerEntry();
+		if (serverInfo == null) {
 			return false;
 		}
+
+		return MINECLUB_SERVER_ADDR_PATTERN.matcher(serverInfo.address).matches();
 	}
 }
