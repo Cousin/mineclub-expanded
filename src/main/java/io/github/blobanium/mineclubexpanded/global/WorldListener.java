@@ -1,5 +1,6 @@
 package io.github.blobanium.mineclubexpanded.global;
 
+import com.google.common.base.Strings;
 import io.github.blobanium.mineclubexpanded.MineclubExpanded;
 import io.github.blobanium.mineclubexpanded.games.tabletop.RichPresenceTabletopChatListener;
 import io.github.blobanium.mineclubexpanded.housing.HousingRichPresenceListener;
@@ -8,6 +9,9 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
+
 public class WorldListener {
     public static String worldName;
     public static boolean isInHousing = false;
@@ -15,55 +19,47 @@ public class WorldListener {
     public static boolean isAlreadyInStaffHQ = false;
 
     public static void listenWorld(){
-        if(MineclubExpanded.isOnMineclub()) {
-            try {
-                if (!MinecraftClient.getInstance().world.getRegistryKey().getValue().getPath().equals(worldName)) {
-                    worldName = MinecraftClient.getInstance().world.getRegistryKey().getValue().getPath();
-                    MineclubExpanded.LOGGER.debug("WorldName=" + worldName);
-                    worldCheck(worldName);
-                }
-            } catch (NullPointerException e) {
-                //Supress NullPointerException
+        if (MineclubExpanded.isOnMineclub()) {
+            final ClientWorld clientWorld = MinecraftClient.getInstance().world;
+            if (clientWorld == null) {
+                return;
+            }
+
+            if (!clientWorld.getRegistryKey().getValue().getPath().equals(worldName)) {
+                worldName = clientWorld.getRegistryKey().getValue().getPath();
+                MineclubExpanded.LOGGER.debug("WorldName=" + worldName);
+                worldCheck(worldName);
             }
         }
     }
 
     private static void worldCheck(String world){
         //Lobby, AFK Lounge
-        checkWorld(0, world, "overworld", "In The Lobby", "Playing On Mineclub");
+        checkWorld(MatchingMode.EQUALITY, world, "overworld", "In The Lobby", "Playing On Mineclub");
 
         //Main Games
-        checkWorld(0, world, "gamemap_battle_dome", "Currently In Battle Dome", "Playing On Mineclub");
-        checkWorld(0, world, "gamemap_slime_walls", "Currently In Slime Walls", "Playing On Mineclub");
-        checkWorld(1, world, "master", "Currently Playing Speed Tag", "Playing On Mineclub");
-        checkWorld(0, world, "gamemap_laser_tag", "Currently In Laser Tag", "Playing On Mineclub");
-        checkWorld(0, world, "gamemap_dodge_ball", "Currently In Dodge Ball", "Playing On Mineclub");
+        checkWorld(MatchingMode.EQUALITY, world, "gamemap_battle_dome", "Currently In Battle Dome", "Playing On Mineclub");
+        checkWorld(MatchingMode.EQUALITY, world, "gamemap_slime_walls", "Currently In Slime Walls", "Playing On Mineclub");
+        checkWorld(MatchingMode.STARTS_WITH, world, "master", "Currently Playing Speed Tag", "Playing On Mineclub");
+        checkWorld(MatchingMode.EQUALITY, world, "gamemap_laser_tag", "Currently In Laser Tag", "Playing On Mineclub");
+        checkWorld(MatchingMode.EQUALITY, world, "gamemap_dodge_ball", "Currently In Dodge Ball", "Playing On Mineclub");
 
         //Tabletop Games
-        checkWorld(1, world, "connect4", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Connect 4");
-        checkWorld(1, world, "match5", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Match 5");
-        checkWorld(1, world, "luckyshot", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Lucky Shot");
-        checkWorld(1, world, "ttt", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Tic Tac Toe");
-        checkWorld(1, world, "sumo", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Sumo");
-        checkWorld(1, world, "ms", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Minesweep");
-        checkWorld(1, world, "snowball", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Snowball Fight");
+        checkWorld(MatchingMode.STARTS_WITH, world, "connect4", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Connect 4");
+        checkWorld(MatchingMode.STARTS_WITH, world, "match5", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Match 5");
+        checkWorld(MatchingMode.STARTS_WITH, world, "luckyshot", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Lucky Shot");
+        checkWorld(MatchingMode.STARTS_WITH, world, "ttt", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Tic Tac Toe");
+        checkWorld(MatchingMode.STARTS_WITH, world, "sumo", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Sumo");
+        checkWorld(MatchingMode.STARTS_WITH, world, "ms", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Minesweep");
+        checkWorld(MatchingMode.STARTS_WITH, world, "snowball", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Snowball Fight");
 
         //Housing
         checkHousing(world);
     }
 
-    //
-    private static void checkWorld(int targetType, String world, String targetWorldName, String state, String details){
-        if(targetType == 0){
-            if(world.equals(targetWorldName)){
-                sendPresence(state, details);
-            }
-        }
-
-        if(targetType == 1){
-            if(world.startsWith(targetWorldName)){
-                sendPresence(state, details);
-            }
+    private static void checkWorld(MatchingMode matchingMode, String world, String targetWorldName, String state, String details){
+        if (matchingMode.getBiPredicate().test(world, targetWorldName)) {
+            sendPresence(state, details);
         }
     }
 
@@ -73,7 +69,7 @@ public class WorldListener {
     }
 
     private static void checkHousing(String world){
-        if(!cancelHousingUpdate) {
+        if (!cancelHousingUpdate) {
             if (world.startsWith("housing")) {
                 isInHousing = true;
                 if (FabricLoader.getInstance().isModLoaded("advancedchat")) {
@@ -88,4 +84,22 @@ public class WorldListener {
             cancelHousingUpdate = false;
         }
     }
+
+    private enum MatchingMode {
+
+        EQUALITY((world, targetWorldName) -> world.equals(targetWorldName)),
+        STARTS_WITH((world, targetWorldName) -> world.startsWith(targetWorldName));
+
+        final BiPredicate<String, String> biPredicate;
+
+        MatchingMode(BiPredicate<String, String> biPredicate) {
+            this.biPredicate = biPredicate;
+        }
+
+        public BiPredicate<String, String> getBiPredicate() {
+            return biPredicate;
+        }
+
+    }
+
 }

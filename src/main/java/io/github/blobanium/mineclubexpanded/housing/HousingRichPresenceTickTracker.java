@@ -16,9 +16,9 @@ public class HousingRichPresenceTickTracker{
     }
 
     public static void checkReminder(){
-        if(TickTracker.tickNo >= tickTarget && !hasNotified){
+        if (TickTracker.tickNo >= tickTarget && !hasNotified) {
             if (WorldListener.worldName.equals(MinecraftClient.getInstance().world.getRegistryKey().getValue().getPath())) {
-                if(cancelHousingUpdate) {
+                if (cancelHousingUpdate) {
                     MineclubExpanded.LOGGER.debug("Canceling Housing Update");
                 } else {
                     HousingRichPresenceListener.sendHousingPresence();

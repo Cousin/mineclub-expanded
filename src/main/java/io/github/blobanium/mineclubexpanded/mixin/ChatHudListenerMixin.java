@@ -38,7 +38,7 @@ public class ChatHudListenerMixin {
             //Broadcast On Chat Message
             onMessage(message);
         } else {
-            if(lastMessage.equals(message.getString())||lastMessage2.equals(message.getString())){
+            if (lastMessage.equals(message.getString()) || lastMessage2.equals(message.getString())) {
                 chatBeingCleared = false;
             }
         }
