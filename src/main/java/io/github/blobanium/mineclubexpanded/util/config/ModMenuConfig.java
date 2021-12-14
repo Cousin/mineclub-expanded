@@ -40,41 +40,41 @@ public class ModMenuConfig implements ModMenuApi {
             ConfigCategory general = builder.getOrCreateCategory(new TranslatableText("mineclub-expanded.category.market"));
 
             if(DiscordRP.supportsRichPresence) {
-                general.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("mineclub-expanded.config.richpresence"), ConfigReader.richPresence)
+                general.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("mineclub-expanded.config.richpresence"), ConfigReader.isRichPresenceEnabled())
                         .setDefaultValue(false)
                         .setTooltip(new TranslatableText("mineclub-expanded.config.richpresence.description"))
-                        .setSaveConsumer(newValue -> ConfigReader.richPresence = newValue)
+                        .setSaveConsumer(ConfigReader::setRichPresenceEnabled)
                         .build());
             } else {
-                general.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("mineclub-expanded.config.richpresence.unsupported"), ConfigReader.richPresence)
+                general.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("mineclub-expanded.config.richpresence.unsupported"), ConfigReader.isRichPresenceEnabled())
                         .setDefaultValue(false)
                         .setTooltip(new TranslatableText("mineclub-expanded.config.richpresence.unsupported.description"))
-                        .setSaveConsumer(newValue -> ConfigReader.richPresence = newValue)
+                        .setSaveConsumer(ConfigReader::setRichPresenceEnabled)
                         .build());
             }
 
-            general.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("mineclub-expanded.config.outbidsound"), ConfigReader.outbidNotification)
+            general.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("mineclub-expanded.config.outbidsound"), ConfigReader.isOutbidNotificationsEnabled())
                     .setDefaultValue(false)
                     .setTooltip(new TranslatableText("mineclub-expanded.config.outbidsound.description"))
-                    .setSaveConsumer(newValue -> ConfigReader.outbidNotification = newValue)
+                    .setSaveConsumer(ConfigReader::setOutbidNotificationsEnabled)
                     .build());
 
-            general.addEntry(entryBuilder.startIntSlider(new TranslatableText("mineclub-expanded.config.outbidvolume"), ConfigReader.outbidVolume, 0, 200)
+            general.addEntry(entryBuilder.startIntSlider(new TranslatableText("mineclub-expanded.config.outbidvolume"), ConfigReader.getOutbidVolume(), 0, 200)
                     .setDefaultValue(100)
                     .setTooltip(new TranslatableText("mineclub-expanded.config.outbidvolume.description"))
-                    .setSaveConsumer(newValue -> ConfigReader.outbidVolume = newValue)
+                    .setSaveConsumer(ConfigReader::setOutbidVolume)
                     .build());
 
-            general.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("mineclub-expanded.config.autogg"), ConfigReader.autogg)
+            general.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("mineclub-expanded.config.autogg"), ConfigReader.isAutoGGEnabled())
                     .setDefaultValue(false)
                     .setTooltip(new TranslatableText("mineclub-expanded.config.autogg.description"))
-                    .setSaveConsumer(newValue -> ConfigReader.autogg = newValue)
+                    .setSaveConsumer(ConfigReader::setAutoGGEnabled)
                     .build());
 
-            general.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("mineclub-expanded.config.autoreconnect"), ConfigReader.autoReconnect)
+            general.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("mineclub-expanded.config.autoreconnect"), ConfigReader.isAutoReconnectEnabled())
                     .setDefaultValue(false)
                     .setTooltip(new TranslatableText("mineclub-expanded.config.autoreconnect.description"))
-                    .setSaveConsumer(newValue -> ConfigReader.autoReconnect = newValue)
+                    .setSaveConsumer(ConfigReader::setAutoReconnectEnabled)
                     .build());
 
 

@@ -16,7 +16,7 @@ public class SoundPlayer {
 
     public static void playSound(float pitch){
         SoundEvent sound = registerSound();
-        PositionedSoundInstance posSound = PositionedSoundInstance.master(sound, pitch, getVolume(ConfigReader.outbidVolume));
+        PositionedSoundInstance posSound = PositionedSoundInstance.master(sound, pitch, getVolume(ConfigReader.getOutbidVolume()));
         MinecraftClient.getInstance().getSoundManager().play(posSound);
     }
 

@@ -45,11 +45,11 @@ public class ChatHudListenerMixin {
     }
 
     private static void onMessage(Text message){
-        if(ConfigReader.outbidNotification) {
+        if(ConfigReader.isOutbidNotificationsEnabled()) {
             OutbidNotifier.onChatMessage(message);
         }
 
-        if(ConfigReader.richPresence){
+        if(ConfigReader.isRichPresenceEnabled()){
             RichPresenceTabletopChatListener.onChatMessage(message);
 
             if(WorldListener.isInHousing){

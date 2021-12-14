@@ -20,7 +20,7 @@ public class InGameHudMixin {
 
     @Inject(at = @At("TAIL"), method = "renderHotbarItem")
     private void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed, CallbackInfo ci){
-        int itemID = Item.getRawId(stack.getItem());
+        final int itemID = Item.getRawId(stack.getItem());
 
         hasFeather = isItemInHotbar(itemID, 733, hasFeather, featherCountdown);
         hasCompass = isItemInHotbar(itemID, 795, hasCompass, compassCountdown);

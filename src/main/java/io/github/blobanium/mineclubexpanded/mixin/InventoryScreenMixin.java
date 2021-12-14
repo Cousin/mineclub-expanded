@@ -14,26 +14,27 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(HandledScreen.class)
 public class InventoryScreenMixin {
-    private static String jsonDisplayName;
-    private static String fullname;
+
+    private static final int PLAYER_HEAD_RAW_ID = 955;
 
     @Inject(at = @At("HEAD"), method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V")
     protected void onMouseClick(Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci){
-        //Player Heads have a Raw ID of 955
-        try {
-            if(Item.getRawId(slot.getStack().getItem()) == 955) {
-                jsonDisplayName = slot.getStack().getNbt().getCompound("display").getString("Name");
-                fullname = jsonDisplayName.substring(130).replace("\"}],\"text\":\"\"}", "");
-                if(fullname.length() <= 16){
-                    WorldListener.cancelHousingUpdate = true;
-                    DiscordRP.updateStatus("Currently In " + fullname + "'s Home", "Playing On Mineclub");
-                } else {
-                    WorldListener.cancelHousingUpdate = true;
-                    DiscordRP.updateStatus("Currently In " + GradientHelper.convertGradientToString(fullname) + "'s Home", "Playing On Mineclub");
-                }
+        if (Item.getRawId(slot.getStack().getItem()) == PLAYER_HEAD_RAW_ID) {
+            if (slot.getStack().getNbt() == null) { // hasNbt probably better, but rids of annoying Nullable warning
+                return;
             }
-        }catch(NullPointerException ignored){
-            //Supress Null Exception
+
+            final String jsonDisplayName = slot.getStack().getNbt().getCompound("display").getString("Name");
+            final String fullname = jsonDisplayName.substring(130).replace("\"}],\"text\":\"\"}", "");
+
+            if(fullname.length() <= 16){
+                WorldListener.cancelHousingUpdate = true;
+                DiscordRP.updateStatus("Currently In " + fullname + "'s Home", "Playing On Mineclub");
+            } else {
+                WorldListener.cancelHousingUpdate = true;
+                DiscordRP.updateStatus("Currently In " + GradientHelper.convertGradientToString(fullname) + "'s Home", "Playing On Mineclub");
+            }
         }
     }
+
 }

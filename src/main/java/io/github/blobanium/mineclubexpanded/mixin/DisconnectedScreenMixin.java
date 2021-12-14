@@ -6,6 +6,7 @@ import io.github.blobanium.mineclubexpanded.util.feature.Autoreconnect;
 import net.minecraft.client.gui.screen.DisconnectedScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+import org.lwjgl.system.CallbackI;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,15 +18,17 @@ public class DisconnectedScreenMixin {
 
     @Inject(at = @At("TAIL"), method = "<init>")
     private void init(Screen parent, Text title, Text reason, CallbackInfo ci) {
-        boolean doNotReconnect = false;
+        if (!ConfigReader.isAutoReconnectEnabled()) {
+            return;
+        }
+
         MineclubExpanded.LOGGER.warn("Disconnection occurred.\nTitle=" + title.getString() + "\nReason=" + reason.getString());
-        if(reason.getString().contains("You were kicked for")){
+        if (reason.getString().contains("You were kicked for")) {
             MineclubExpanded.LOGGER.error("Will not reconnect (has been kicked my a moderator, do not use auto-reconnect for malicious intent.)");
-            doNotReconnect = true;
+            return;
         }
-        if(ConfigReader.autoReconnect && !doNotReconnect) {
-            Autoreconnect.setReminder(5, parent);
-        }
+
+        Autoreconnect.setReminder(5, parent);
     }
 
 }

@@ -21,7 +21,7 @@ public class DiscordRP {
     }
 
     public static void updateStatus(String state, String details){
-        if(ConfigReader.richPresence) {
+        if(ConfigReader.isRichPresenceEnabled()) {
             updateStatusInternal(state, details);
             hasBlankStatus = false;
         }

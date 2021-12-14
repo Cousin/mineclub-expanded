@@ -5,8 +5,6 @@ import net.minecraft.text.Text;
 
 public class OutbidNotifier {
 
-    private static final float SOUND_PITCH = 1.0F;
-
     public static void onChatMessage(Text message){
         final String textMessage = message.getString().replaceAll("\\[","\\\\[");
         if(textMessage.startsWith("ꌄ§8\\[§dMarket§8] §cYou have been outbid by")){

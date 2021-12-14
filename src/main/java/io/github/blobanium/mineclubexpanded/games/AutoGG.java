@@ -8,7 +8,7 @@ public class AutoGG {
     public static boolean isSpectatorMode = false;
 
     public static void autoGg(SoundInstance sound){
-        if(ConfigReader.autogg) {
+        if(ConfigReader.isAutoGGEnabled()) {
             if (sound.getId().toString().equals("minecraft:custom.mineclub.roundover-1")) {
                 if (!isSpectatorMode) {
                     MinecraftClient.getInstance().player.sendChatMessage("gg");
