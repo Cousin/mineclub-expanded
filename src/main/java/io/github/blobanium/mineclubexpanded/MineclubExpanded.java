@@ -15,7 +15,8 @@ public class MineclubExpanded implements ModInitializer {
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LogManager.getLogger("Mineclub Expanded");
-	public static boolean isChatOpen = false;
+
+	private static boolean chatOpen = false;
 
 	private static final Pattern MINECLUB_SERVER_ADDR_PATTERN = Pattern.compile("(.+\\.)?mineclub\\.(com|net|org|house)", Pattern.CASE_INSENSITIVE);
 
@@ -42,5 +43,13 @@ public class MineclubExpanded implements ModInitializer {
 		}
 
 		return MINECLUB_SERVER_ADDR_PATTERN.matcher(serverInfo.address).matches();
+	}
+
+	public static boolean isChatOpen() {
+		return chatOpen;
+	}
+
+	public static void setChatOpen(boolean chatOpen) {
+		MineclubExpanded.chatOpen = chatOpen;
 	}
 }

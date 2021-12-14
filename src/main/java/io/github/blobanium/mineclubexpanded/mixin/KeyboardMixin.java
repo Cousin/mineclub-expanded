@@ -16,19 +16,19 @@ public class KeyboardMixin {
 
     @Inject(at = @At("HEAD"), method = "onKey")
     private void onKey(long window, int key, int scancode, int action, int modifiers, CallbackInfo ci){
-        //TODO Figure out keypresses
-        //ESC = 256, Enter/Return = 257
-        if(key == 256){
-            MineclubExpanded.isChatOpen = false;
-            Autoreconnect.cancelAutoReconnect = true;
-        }
+        switch (key) {
+            case 256: // esc
+                MineclubExpanded.setChatOpen(false);
+                Autoreconnect.cancelAutoReconnect = true;
+                break;
 
-        if(key == 257){
-            if(WorldListener.isInHousing){
-                if(HousingRichPresenceListener.lastChatField.startsWith("/home")) {
-                    HousingRichPresenceTickTracker.setReminder(3);
+            case 257: // enter/return
+                if (WorldListener.isInHousing()) {
+                    if (HousingRichPresenceListener.lastChatField.startsWith("/home")) {
+                        HousingRichPresenceTickTracker.setReminder(3);
+                    }
                 }
-            }
+                break;
         }
     }
 

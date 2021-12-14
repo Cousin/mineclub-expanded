@@ -11,17 +11,16 @@ import net.minecraft.util.registry.Registry;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-
 public class SoundPlayer {
 
     public static void playSound(float pitch){
-        SoundEvent sound = registerSound();
-        PositionedSoundInstance posSound = PositionedSoundInstance.master(sound, pitch, getVolume(ConfigReader.getOutbidVolume()));
+        final SoundEvent sound = registerSound();
+        final PositionedSoundInstance posSound = PositionedSoundInstance.master(sound, pitch, getVolume(ConfigReader.getOutbidVolume()));
         MinecraftClient.getInstance().getSoundManager().play(posSound);
     }
 
     private static SoundEvent registerSound(){
-        Identifier soundId = new Identifier(SoundEvents.ENTITY_BEE_DEATH.getId().toString());
+        final Identifier soundId = new Identifier(SoundEvents.ENTITY_BEE_DEATH.getId().toString());
         return Registry.SOUND_EVENT.get(soundId);
     }
 

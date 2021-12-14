@@ -4,6 +4,7 @@ import io.github.blobanium.mineclubexpanded.MineclubExpanded;
 import io.github.blobanium.mineclubexpanded.global.WorldListener;
 import io.github.blobanium.mineclubexpanded.util.tick.TickTracker;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.world.ClientWorld;
 
 public class HousingRichPresenceTickTracker{
     public static boolean cancelHousingUpdate = false;
@@ -17,13 +18,19 @@ public class HousingRichPresenceTickTracker{
 
     public static void checkReminder(){
         if (TickTracker.tickNo >= tickTarget && !hasNotified) {
-            if (WorldListener.worldName.equals(MinecraftClient.getInstance().world.getRegistryKey().getValue().getPath())) {
+            final ClientWorld clientWorld = MinecraftClient.getInstance().world;
+            if (clientWorld == null) {
+                return;
+            }
+
+            if (WorldListener.worldName.equals(clientWorld.getRegistryKey().getValue().getPath())) {
                 if (cancelHousingUpdate) {
                     MineclubExpanded.LOGGER.debug("Canceling Housing Update");
                 } else {
                     HousingRichPresenceListener.sendHousingPresence();
                 }
             }
+
             cancelHousingUpdate = false;
             hasNotified = true;
         }

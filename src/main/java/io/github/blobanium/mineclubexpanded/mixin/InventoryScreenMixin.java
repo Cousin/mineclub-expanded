@@ -27,11 +27,11 @@ public class InventoryScreenMixin {
             final String jsonDisplayName = slot.getStack().getNbt().getCompound("display").getString("Name");
             final String fullname = jsonDisplayName.substring(130).replace("\"}],\"text\":\"\"}", "");
 
-            if(fullname.length() <= 16){
-                WorldListener.cancelHousingUpdate = true;
+            WorldListener.setCancelHousingUpdate(true);
+
+            if (fullname.length() <= 16) {
                 DiscordRP.updateStatus("Currently In " + fullname + "'s Home", "Playing On Mineclub");
             } else {
-                WorldListener.cancelHousingUpdate = true;
                 DiscordRP.updateStatus("Currently In " + GradientHelper.convertGradientToString(fullname) + "'s Home", "Playing On Mineclub");
             }
         }

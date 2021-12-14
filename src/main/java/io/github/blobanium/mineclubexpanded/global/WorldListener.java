@@ -1,6 +1,5 @@
 package io.github.blobanium.mineclubexpanded.global;
 
-import com.google.common.base.Strings;
 import io.github.blobanium.mineclubexpanded.MineclubExpanded;
 import io.github.blobanium.mineclubexpanded.games.tabletop.RichPresenceTabletopChatListener;
 import io.github.blobanium.mineclubexpanded.housing.HousingRichPresenceListener;
@@ -10,13 +9,14 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 public class WorldListener {
+
     public static String worldName;
-    public static boolean isInHousing = false;
-    public static boolean cancelHousingUpdate = false;
-    public static boolean isAlreadyInStaffHQ = false;
+
+    private static boolean inHousing = false;
+    private static boolean cancelHousingUpdate = false;
+    private static boolean alreadyInStaffHQ = false;
 
     public static void listenWorld(){
         if (MineclubExpanded.isOnMineclub()) {
@@ -45,13 +45,13 @@ public class WorldListener {
         checkWorld(MatchingMode.EQUALITY, world, "gamemap_dodge_ball", "Currently In Dodge Ball", "Playing On Mineclub");
 
         //Tabletop Games
-        checkWorld(MatchingMode.STARTS_WITH, world, "connect4", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Connect 4");
-        checkWorld(MatchingMode.STARTS_WITH, world, "match5", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Match 5");
-        checkWorld(MatchingMode.STARTS_WITH, world, "luckyshot", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Lucky Shot");
-        checkWorld(MatchingMode.STARTS_WITH, world, "ttt", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Tic Tac Toe");
-        checkWorld(MatchingMode.STARTS_WITH, world, "sumo", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Sumo");
-        checkWorld(MatchingMode.STARTS_WITH, world, "ms", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Minesweep");
-        checkWorld(MatchingMode.STARTS_WITH, world, "snowball", "Playing with " + RichPresenceTabletopChatListener.matchedUsername, "Currently Playing Snowball Fight");
+        checkWorld(MatchingMode.STARTS_WITH, world, "connect4", "Playing with " + RichPresenceTabletopChatListener.getMatchedUsername(), "Currently Playing Connect 4");
+        checkWorld(MatchingMode.STARTS_WITH, world, "match5", "Playing with " + RichPresenceTabletopChatListener.getMatchedUsername(), "Currently Playing Match 5");
+        checkWorld(MatchingMode.STARTS_WITH, world, "luckyshot", "Playing with " + RichPresenceTabletopChatListener.getMatchedUsername(), "Currently Playing Lucky Shot");
+        checkWorld(MatchingMode.STARTS_WITH, world, "ttt", "Playing with " + RichPresenceTabletopChatListener.getMatchedUsername(), "Currently Playing Tic Tac Toe");
+        checkWorld(MatchingMode.STARTS_WITH, world, "sumo", "Playing with " + RichPresenceTabletopChatListener.getMatchedUsername(), "Currently Playing Sumo");
+        checkWorld(MatchingMode.STARTS_WITH, world, "ms", "Playing with " + RichPresenceTabletopChatListener.getMatchedUsername(), "Currently Playing Minesweep");
+        checkWorld(MatchingMode.STARTS_WITH, world, "snowball", "Playing with " + RichPresenceTabletopChatListener.getMatchedUsername(), "Currently Playing Snowball Fight");
 
         //Housing
         checkHousing(world);
@@ -65,20 +65,20 @@ public class WorldListener {
 
     private static void sendPresence(String state, String details){
         DiscordRP.updateStatus(state, details);
-        isAlreadyInStaffHQ = false;
+        alreadyInStaffHQ = false;
     }
 
     private static void checkHousing(String world){
         if (!cancelHousingUpdate) {
             if (world.startsWith("housing")) {
-                isInHousing = true;
+                inHousing = true;
                 if (FabricLoader.getInstance().isModLoaded("advancedchat")) {
                     DiscordRP.updateStatus("Currently In Housing", "Playing On Mineclub");
                 } else {
                     HousingRichPresenceListener.sendHousingPresence();
                 }
             } else {
-                isInHousing = false;
+                inHousing = false;
             }
         } else {
             cancelHousingUpdate = false;
@@ -102,4 +102,27 @@ public class WorldListener {
 
     }
 
+    public static boolean isInHousing() {
+        return inHousing;
+    }
+
+    public static boolean isCancelHousingUpdate() {
+        return cancelHousingUpdate;
+    }
+
+    public static boolean isAlreadyInStaffHQ() {
+        return alreadyInStaffHQ;
+    }
+
+    public static void setInHousing(boolean inHousing) {
+        WorldListener.inHousing = inHousing;
+    }
+
+    public static void setCancelHousingUpdate(boolean cancelHousingUpdate) {
+        WorldListener.cancelHousingUpdate = cancelHousingUpdate;
+    }
+
+    public static void setAlreadyInStaffHQ(boolean alreadyInStaffHQ) {
+        WorldListener.alreadyInStaffHQ = alreadyInStaffHQ;
+    }
 }

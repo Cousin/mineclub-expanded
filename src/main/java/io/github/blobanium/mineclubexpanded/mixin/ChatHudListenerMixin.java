@@ -27,12 +27,12 @@ public class ChatHudListenerMixin {
     @Inject(at = @At("HEAD"), method = "onChatMessage")
     public void onChatMessage(MessageType messageType, Text message, UUID sender, CallbackInfo ci){
         //Detect If A Chat message is being deleted on mineclub.
-        if(message.getString().matches("ꌄ§7")){
+        if (message.getString().matches("ꌄ§7")) {
             msgCount = msgCount + 1;
             if(msgCount >= 80){
                 chatBeingCleared = true;
             }
-        } else if(!chatBeingCleared) {
+        } else if (!chatBeingCleared) {
             lastMessage2 = lastMessage;
             lastMessage = message.getString();
             //Broadcast On Chat Message
@@ -45,27 +45,27 @@ public class ChatHudListenerMixin {
     }
 
     private static void onMessage(Text message){
-        if(ConfigReader.isOutbidNotificationsEnabled()) {
+        if (ConfigReader.isOutbidNotificationsEnabled()) {
             OutbidNotifier.onChatMessage(message);
         }
 
-        if(ConfigReader.isRichPresenceEnabled()){
+        if (ConfigReader.isRichPresenceEnabled()) {
             RichPresenceTabletopChatListener.onChatMessage(message);
 
-            if(WorldListener.isInHousing){
+            if (WorldListener.isInHousing()) {
                 if(message.getString().startsWith("ꌄ冈 No player found by name")){
                     HousingRichPresenceTickTracker.cancelHousingUpdate = true;
                 }
             }
 
-            if(message.getString().startsWith("ꌄ咀") && !WorldListener.isAlreadyInStaffHQ){
+            WorldListener.setAlreadyInStaffHQ(true);
+
+            if(message.getString().startsWith("ꌄ咀") && !WorldListener.isAlreadyInStaffHQ()){
                 DiscordRP.updateStatus("Currently in Staff HQ","Playing on Mineclub");
-                WorldListener.isAlreadyInStaffHQ = true;
             }
 
-            if(message.getString().startsWith("ꌄ骐") && WorldListener.isAlreadyInStaffHQ){
+            if(message.getString().startsWith("ꌄ骐") && WorldListener.isAlreadyInStaffHQ()){
                 DiscordRP.updateStatus("In The Lobby","Playing on Mineclub");
-                WorldListener.isAlreadyInStaffHQ = true;
             }
         }
     }

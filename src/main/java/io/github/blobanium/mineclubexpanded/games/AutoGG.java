@@ -5,15 +5,23 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.SoundInstance;
 
 public class AutoGG {
-    public static boolean isSpectatorMode = false;
+    private static boolean spectatorMode = false;
 
     public static void autoGg(SoundInstance sound){
         if(ConfigReader.isAutoGGEnabled()) {
             if (sound.getId().toString().equals("minecraft:custom.mineclub.roundover-1")) {
-                if (!isSpectatorMode) {
+                if (!spectatorMode) {
                     MinecraftClient.getInstance().player.sendChatMessage("gg");
                 }
             }
         }
+    }
+
+    public static boolean isSpectatorMode() {
+        return spectatorMode;
+    }
+
+    public static void setSpectatorMode(boolean spectatorMode) {
+        AutoGG.spectatorMode = spectatorMode;
     }
 }

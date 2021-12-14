@@ -25,12 +25,12 @@ public class InGameHudMixin {
         hasFeather = isItemInHotbar(itemID, 733, hasFeather, featherCountdown);
         hasCompass = isItemInHotbar(itemID, 795, hasCompass, compassCountdown);
 
-        if ((hasFeather && hasCompass) != AutoGG.isSpectatorMode){
-            if(hasFeather && hasCompass){
-                AutoGG.isSpectatorMode = true;
+        if ((hasFeather && hasCompass) != AutoGG.isSpectatorMode()) {
+            if (hasFeather && hasCompass) {
+                AutoGG.setSpectatorMode(true);
                 MineclubExpanded.LOGGER.debug("Spectator mode is on");
             } else {
-                AutoGG.isSpectatorMode = false;
+                AutoGG.setSpectatorMode(false);
                 MineclubExpanded.LOGGER.debug("Spectator mode is off");
             }
         }
