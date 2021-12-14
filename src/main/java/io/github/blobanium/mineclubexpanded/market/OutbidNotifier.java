@@ -4,10 +4,11 @@ import io.github.blobanium.mineclubexpanded.util.sound.SoundPlayer;
 import net.minecraft.text.Text;
 
 public class OutbidNotifier {
-    private static float pitch = 1.0F;
+
+    private static final float SOUND_PITCH = 1.0F;
 
     public static void onChatMessage(Text message){
-        String textMessage = message.getString().replaceAll("\\[","\\\\[");
+        final String textMessage = message.getString().replaceAll("\\[","\\\\[");
         if(textMessage.startsWith("ꌄ§8\\[§dMarket§8] §cYou have been outbid by")){
             SoundPlayer.playSound(1.0F);
         }
@@ -15,4 +16,5 @@ public class OutbidNotifier {
             SoundPlayer.playSound(0.8F);
         }
     }
+
 }

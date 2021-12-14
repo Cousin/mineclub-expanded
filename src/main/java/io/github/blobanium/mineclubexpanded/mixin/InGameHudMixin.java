@@ -25,7 +25,6 @@ public class InGameHudMixin {
         hasFeather = isItemInHotbar(itemID, 733, hasFeather, featherCountdown);
         hasCompass = isItemInHotbar(itemID, 795, hasCompass, compassCountdown);
 
-
         if ((hasFeather && hasCompass) != AutoGG.isSpectatorMode){
             if(hasFeather && hasCompass){
                 AutoGG.isSpectatorMode = true;
